@@ -9,13 +9,15 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b}
 
 /* ── Header ── */
-.header{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;padding:24px 32px}
-.header h1{font-size:1.5rem;font-weight:700}
-.header p{opacity:.8;font-size:.85rem;margin-top:4px}
+.header{background:linear-gradient(135deg,#0b1d35,#1a3557 45%,#1d4ed8);color:#fff;padding:24px 32px;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.10) 1px,transparent 0);background-size:22px 22px;pointer-events:none}
+.header h1{font-size:1.5rem;font-weight:700;position:relative}
+.header p{opacity:.8;font-size:.85rem;margin-top:4px;position:relative}
 
 /* ── Summary Cards ── */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;padding:24px 32px}
-.card{background:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card{background:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.10)}
 .card-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b}
 .card-value{font-size:1.6rem;font-weight:800;margin-top:4px}
 .card-sub{font-size:.75rem;color:#94a3b8;margin-top:2px}
@@ -88,9 +90,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── Progress Bar ── */
 .progress-wrap{padding:0 32px 28px}
 .progress-label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:#374151;margin-bottom:8px}
-.progress-track{height:16px;background:#e2e8f0;border-radius:99px;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:99px;transition:width .4s}
-.progress-fill.partial{background:linear-gradient(90deg,#16a34a,#f59e0b)}
+.progress-track{height:18px;background:#e2e8f0;border-radius:99px;overflow:hidden;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,#15803d,#22c55e,#86efac);border-radius:99px;transition:width .4s;position:relative}
+.progress-fill.partial{background:linear-gradient(90deg,#15803d,#22c55e,#f59e0b)}
+.progress-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.25) 0%,transparent 60%);border-radius:99px}
+
+/* ── Charts ── */
+.charts-section{padding:0 32px 32px}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.chart-card{background:#fff;border-radius:14px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.chart-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:4px}
+.chart-subtitle{font-size:.72rem;color:#94a3b8;margin-bottom:14px}
+.chart-canvas-wrap{position:relative}
+
+/* ── Loan Charts ── */
+.loan-charts{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+@media(max-width:700px){.loan-charts{grid-template-columns:1fr}.charts-section{padding:0 16px 24px}.charts-grid{grid-template-columns:1fr}}
 
 /* ── Info box ── */
 .info-box{background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);font-size:.83rem}
@@ -148,6 +163,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <span>~₹1,25,87,449 / ₹1,72,71,760 = <strong>72.9%</strong></span>
   </div>
   <div class="progress-track"><div class="progress-fill partial" style="width:72.9%"></div></div>
+</div>
+
+<!-- ── Charts Overview ── -->
+<div class="charts-section">
+  <div style="font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:8px">📊 Visual Summary</div>
+  <div class="charts-grid">
+
+    <!-- Donut: Payment Progress -->
+    <div class="chart-card">
+      <div class="chart-title">Payment Progress</div>
+      <div class="chart-subtitle">Paid vs remaining on sale consideration (₹1,72,71,760)</div>
+      <div class="chart-canvas-wrap" style="height:220px"><canvas id="chartPaymentProgress"></canvas></div>
+    </div>
+
+    <!-- Bar: Installment Status -->
+    <div class="chart-card">
+      <div class="chart-title">Installment Breakdown</div>
+      <div class="chart-subtitle">Total demanded per installment · color by status</div>
+      <div class="chart-canvas-wrap" style="height:220px"><canvas id="chartInstallments"></canvas></div>
+    </div>
+
+    <!-- Donut: Funding Source -->
+    <div class="chart-card">
+      <div class="chart-title">Funding Sources</div>
+      <div class="chart-subtitle">Where the money came from (total ₹1,45,88,346 into project)</div>
+      <div class="chart-canvas-wrap" style="height:220px"><canvas id="chartFunding"></canvas></div>
+    </div>
+
+    <!-- Bar: TDS Batches -->
+    <div class="chart-card">
+      <div class="chart-title">TDS Payments Over Time</div>
+      <div class="chart-subtitle">Combined Kush + Kanchan per batch (₹) — all 5 confirmed</div>
+      <div class="chart-canvas-wrap" style="height:220px"><canvas id="chartTds"></canvas></div>
+    </div>
+
+  </div>
 </div>
 
 <!-- ── Flat & Property Details ── -->
@@ -983,6 +1034,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="info-row"><span>Interest Rate History</span><span>8.65% → 8.45% (06 Jul 2024) → 8.20% (15 Feb 2025) → 7.95% (15 Apr 2025) → 7.45% (15 Jun 2025) → <strong>7.20%</strong> (15 Dec 2025)</span></div>
   </div>
 
+  <!-- Loan Charts -->
+  <div class="loan-charts">
+    <div class="chart-card">
+      <div class="chart-title">Loan Balance Trend</div>
+      <div class="chart-subtitle">Outstanding balance over 26 months</div>
+      <div class="chart-canvas-wrap" style="height:200px"><canvas id="chartLoanBalance"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">EMI: Principal vs Interest</div>
+      <div class="chart-subtitle">Monthly split — stacked bar</div>
+      <div class="chart-canvas-wrap" style="height:200px"><canvas id="chartEmi"></canvas></div>
+    </div>
+  </div>
+
   <!-- Official Interest Certificates — Income Tax -->
   <div style="font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:10px">Official Interest Certificates (Income Tax — Section 24b)</div>
   <table class="inst-table" style="margin-bottom:10px">
@@ -1112,6 +1177,265 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   Data sourced from builder receipts, TDS challans, cost sheet, and demand letters in Google Drive folder "Home-12807 my home sayuk".<br>
   Last updated: 15 Aug 2026 · Flat 12-807, My Home Sayuk, Tellapur, Hyderabad.
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  Chart.defaults.color = '#64748b';
+
+  const SURFACE_GAP = 'rgba(255,255,255,0.9)';
+
+  /* ─── 1. Payment Progress Donut ─── */
+  new Chart(document.getElementById('chartPaymentProgress'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Paid (consideration)', 'Remaining'],
+      datasets: [{
+        data: [12587449, 4684311],
+        backgroundColor: ['#16a34a', '#e2e8f0'],
+        borderColor: [SURFACE_GAP, SURFACE_GAP],
+        borderWidth: 3,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      cutout: '68%',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 14 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ₹' + (ctx.parsed / 100000).toFixed(1) + 'L'
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: 'centreText',
+      afterDraw(chart) {
+        const { width, height, ctx } = chart;
+        ctx.save();
+        const cx = width / 2, cy = height / 2 - 14;
+        ctx.font = 'bold 22px -apple-system, sans-serif';
+        ctx.fillStyle = '#16a34a';
+        ctx.textAlign = 'center';
+        ctx.fillText('72.9%', cx, cy);
+        ctx.font = '11px -apple-system, sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('Paid', cx, cy + 17);
+        ctx.restore();
+      }
+    }]
+  });
+
+  /* ─── 2. Installment Status Horizontal Bar ─── */
+  new Chart(document.getElementById('chartInstallments'), {
+    type: 'bar',
+    data: {
+      labels: ['01 Booking','02 30-day','03 60-day','04 15F Slab','05 27F Slab','06 39F Slab','07 Floors/Doors','08 Regn/Handover'],
+      datasets: [
+        {
+          label: 'Paid',
+          data: [262500, 1551035, 3627070, 3627070, 2720302, 1347197, 0, 0],
+          backgroundColor: '#22c55e',
+          borderRadius: 4
+        },
+        {
+          label: 'Remaining',
+          data: [0, 0, 0, 0, 0, 1373105, 1813535, 1813535],
+          backgroundColor: '#fca5a5',
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          ticks: {
+            callback: v => '₹' + (v/100000).toFixed(0) + 'L',
+            maxTicksLimit: 5
+          },
+          grid: { color: '#f1f5f9' }
+        },
+        y: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + ctx.dataset.label + ': ₹' + (ctx.parsed.x/100000).toFixed(2) + 'L'
+          }
+        }
+      }
+    }
+  });
+
+  /* ─── 3. Funding Sources Donut ─── */
+  new Chart(document.getElementById('chartFunding'), {
+    type: 'doughnut',
+    data: {
+      labels: ['SBI Bank Loan', 'Own Funds (to builder)', 'EMI Paid to SBI'],
+      datasets: [{
+        data: [9088795, 3934113, 1552774],
+        backgroundColor: ['#7c3aed', '#16a34a', '#2563eb'],
+        borderColor: [SURFACE_GAP, SURFACE_GAP, SURFACE_GAP],
+        borderWidth: 3,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      cutout: '60%',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ₹' + (ctx.parsed / 100000).toFixed(1) + 'L'
+          }
+        }
+      }
+    }
+  });
+
+  /* ─── 4. TDS Batches Bar ─── */
+  new Chart(document.getElementById('chartTds'), {
+    type: 'bar',
+    data: {
+      labels: ['Aug 2024\n(installs 1-3)', 'Nov 2024\n(install 4)', 'Feb 2025\n(install 5a)', 'Mar 2025\n(install 5b)', 'Jul 2025\n(install 6a)'],
+      datasets: [
+        {
+          label: 'Kush',
+          data: [25908, 17272, 3847, 9108, 6416],
+          backgroundColor: '#3b82f6',
+          borderRadius: 4
+        },
+        {
+          label: 'Kanchan',
+          data: [25908, 17272, 3847, 9108, 6416],
+          backgroundColor: '#a855f7',
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { size: 9 } }
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            callback: v => '₹' + (v/1000).toFixed(0) + 'k',
+            maxTicksLimit: 5
+          },
+          grid: { color: '#f1f5f9' }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + ctx.dataset.label + ': ₹' + ctx.parsed.y.toLocaleString('en-IN')
+          }
+        }
+      }
+    }
+  });
+
+  /* ─── 5. Loan Balance Trend (line) ─── */
+  const loanMonths = ['Jul-24','Aug-24','Sep-24','Oct-24','Nov-24','Dec-24','Jan-25','Feb-25','Mar-25','Apr-25','May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25','Jan-26','Feb-26','Mar-26','Apr-26','May-26','Jun-26','Jul-26','Aug-26'];
+  const loanBalance = [3614149,3586652,3584905,3582338,6659503,6654636,6650483,6838688,8114369,8108950,8100783,9007745,8997707,8987907,8978045,8966329,8956331,8944441,8933290,8921183,8903750,8877387,8804678,8804678,8785395,8772430];
+  new Chart(document.getElementById('chartLoanBalance'), {
+    type: 'line',
+    data: {
+      labels: loanMonths,
+      datasets: [{
+        label: 'Outstanding Balance',
+        data: loanBalance,
+        borderColor: '#dc2626',
+        backgroundColor: 'rgba(220,38,38,.08)',
+        borderWidth: 2,
+        pointRadius: 2,
+        pointHoverRadius: 5,
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { maxTicksLimit: 7, font: { size: 9 } }, grid: { display: false } },
+        y: {
+          ticks: {
+            callback: v => '₹' + (v/100000).toFixed(0) + 'L',
+            maxTicksLimit: 5
+          },
+          grid: { color: '#f1f5f9' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ₹' + (ctx.parsed.y/100000).toFixed(2) + 'L outstanding'
+          }
+        }
+      }
+    }
+  });
+
+  /* ─── 6. EMI Stacked Bar ─── */
+  const emiMonths = ['Jul-24','Aug-24','Sep-24','Oct-24','Nov-24','Dec-24','Jan-25','Feb-25','Mar-25','Apr-25','May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25','Jan-26','Feb-26','Mar-26','Apr-26','May-26','Jun-26','Jul-26','Aug-26'];
+  const principal = [0,1747,2567,2567,4811,3336,3221,8838,4020,8167,7235,10238,9800,9862,11716,9998,11890,11151,12107,17433,12247,14116,72709,14603,17645,0];
+  const interest  = [21624,25750,24930,24930,46316,47847,48779,43736,56581,53833,54765,56762,57000,56938,55084,56802,54910,55649,54693,49367,54553,52684,54091,52197,53835,0];
+  new Chart(document.getElementById('chartEmi'), {
+    type: 'bar',
+    data: {
+      labels: emiMonths,
+      datasets: [
+        { label: 'Principal', data: principal, backgroundColor: '#22c55e', borderRadius: 2 },
+        { label: 'Interest',  data: interest,  backgroundColor: '#f97316', borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { maxTicksLimit: 8, font: { size: 9 } },
+          grid: { display: false }
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            callback: v => '₹' + (v/1000).toFixed(0) + 'k',
+            maxTicksLimit: 5
+          },
+          grid: { color: '#f1f5f9' }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + ctx.dataset.label + ': ₹' + ctx.parsed.y.toLocaleString('en-IN')
+          }
+        }
+      }
+    }
+  });
+
+})();
+</script>
 
 </body>
 </html>
