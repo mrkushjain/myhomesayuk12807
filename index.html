@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Home Sayuk — Payment Tracker · Flat 12-807</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b}
+
+/* ── Header ── */
+.header{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;padding:24px 32px}
+.header h1{font-size:1.5rem;font-weight:700}
+.header p{opacity:.8;font-size:.85rem;margin-top:4px}
+
+/* ── Summary Cards ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;padding:24px 32px}
+.card{background:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b}
+.card-value{font-size:1.6rem;font-weight:800;margin-top:4px}
+.card-sub{font-size:.75rem;color:#94a3b8;margin-top:2px}
+.c-blue{color:#2563eb}.c-green{color:#16a34a}.c-orange{color:#ea580c}.c-red{color:#dc2626}.c-purple{color:#7c3aed}
+
+/* ── Section ── */
+.section{padding:0 32px 32px}
+.section-title{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#64748b;
+               margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+
+/* ── Installment Table ── */
+.inst-table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;
+            box-shadow:0 1px 4px rgba(0,0,0,.07);font-size:.83rem}
+.inst-table thead tr{background:#1e3a5f;color:#fff}
+.inst-table th{padding:12px 14px;text-align:right;font-weight:700;font-size:.75rem;white-space:nowrap}
+.inst-table th:first-child,.inst-table td:first-child{text-align:left}
+.inst-table tbody tr{border-bottom:1px solid #f1f5f9;transition:background .15s}
+.inst-table tbody tr:hover{background:#f8fafc}
+.inst-table td{padding:12px 14px;vertical-align:top;text-align:right}
+.inst-table td:first-child{text-align:left;min-width:180px}
+.inst-num{font-size:.7rem;color:#94a3b8;font-weight:600}
+.inst-name{font-weight:700;color:#0f172a;font-size:.88rem}
+.inst-trigger{font-size:.73rem;color:#64748b;margin-top:2px}
+.money{font-weight:700;font-size:.88rem}
+.money-sm{font-size:.78rem;color:#64748b}
+.tds-row{display:flex;flex-direction:column;gap:2px;align-items:flex-end}
+.tds-each{font-size:.72rem;color:#64748b}
+.tds-confirmed{color:#16a34a;font-size:.72rem;font-weight:600}
+
+/* ── Status Badge ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.b-paid{background:#dcfce7;color:#16a34a}
+.b-partial{background:#fef3c7;color:#d97706}
+.b-due{background:#fee2e2;color:#dc2626}
+.b-pending{background:#f1f5f9;color:#64748b}
+
+/* ── Doc Links ── */
+.doc-links{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.doc-link{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:#eff6ff;color:#1d4ed8;
+          border-radius:6px;font-size:.7rem;font-weight:600;text-decoration:none;border:1px solid #bfdbfe}
+.doc-link:hover{background:#dbeafe}
+.doc-link.tds-kush{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.doc-link.tds-kanchan{background:#fdf4ff;color:#7e22ce;border-color:#e9d5ff}
+.doc-link.challan{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+
+/* ── TDS Summary ── */
+.tds-batch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.tds-batch{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07);
+           border-left:4px solid #2563eb}
+.tds-batch-title{font-weight:800;font-size:.95rem;color:#0f172a}
+.tds-batch-sub{font-size:.78rem;color:#64748b;margin-top:3px;margin-bottom:14px}
+.tds-persons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.tds-person{padding:10px 14px;border-radius:10px}
+.tds-person.kush{background:#eff6ff;border:1px solid #bfdbfe}
+.tds-person.kanchan{background:#fdf4ff;border:1px solid #e9d5ff}
+.tds-person-name{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#64748b}
+.tds-person-pan{font-size:.7rem;color:#94a3b8}
+.tds-person-amount{font-size:1.3rem;font-weight:800;margin:4px 0}
+.tds-person-base{font-size:.72rem;color:#64748b}
+.tds-person-ack{font-size:.7rem;margin-top:4px;color:#2563eb;font-weight:600}
+.tds-total-row{background:#f8fafc;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.tds-total-label{font-size:.78rem;font-weight:700;color:#374151}
+.tds-total-val{font-size:1.1rem;font-weight:800;color:#16a34a}
+
+/* ── Funding chips ── */
+.chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:700;margin-top:3px}
+.chip-bank{background:#f3e8ff;color:#7c3aed;border:1px solid #ddd6fe}
+.chip-own{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+
+/* ── Progress Bar ── */
+.progress-wrap{padding:0 32px 28px}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:#374151;margin-bottom:8px}
+.progress-track{height:16px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:99px;transition:width .4s}
+.progress-fill.partial{background:linear-gradient(90deg,#16a34a,#f59e0b)}
+
+/* ── Info box ── */
+.info-box{background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);font-size:.83rem}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9}
+.info-row:last-child{border-bottom:none;font-weight:700}
+.info-row span:first-child{color:#64748b}
+.info-row span:last-child{font-weight:600;text-align:right}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 32px 24px}
+
+@media(max-width:700px){.cards{padding:16px}.section{padding:0 16px 24px}.progress-wrap{padding:0 16px 20px}
+.info-grid{padding:0 16px 20px;grid-template-columns:1fr}.inst-table{font-size:.75rem}.inst-table th,.inst-table td{padding:8px 8px}
+.header{padding:18px 16px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏠 My Home Sayuk — Payment Tracker</h1>
+  <p>Flat No. 807 &nbsp;·&nbsp; Tower 12 &nbsp;·&nbsp; Floor 8 &nbsp;·&nbsp; 1926 sq ft &nbsp;·&nbsp; Buyers: Kush Jain &amp; Kanchan Handa &nbsp;·&nbsp; Ref: 1043991</p>
+</div>
+
+<!-- ── Summary Cards ── -->
+<div class="cards">
+  <div class="card">
+    <div class="card-label">Total Flat Cost (revised)</div>
+    <div class="card-value c-blue">~₹1,85,73,420</div>
+    <div class="card-sub">Sale: ₹1,81,35,348 + Charges: ~₹3,21,501 + Interior: ₹25,000</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Paid to Builder (confirmed)</div>
+    <div class="card-value c-green">₹1,30,22,908</div>
+    <div class="card-sub">7 confirmed receipts through Jun 2025</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Remaining (approx)</div>
+    <div class="card-value c-red">~₹52,09,351</div>
+    <div class="card-sub">Install 6 (bal) + 7 + 8 + reg. charges</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Total TDS Paid ✅</div>
+    <div class="card-value c-green">₹1,25,102</div>
+    <div class="card-sub">₹62,551 Kush + ₹62,551 Kanchan · 5 batches</div>
+  </div>
+  <div class="card">
+    <div class="card-label">TDS Coverage</div>
+    <div class="card-value c-green">100%</div>
+    <div class="card-sub">All TDS fully filed · ₹1,25,097 due, ₹1,25,102 paid</div>
+  </div>
+</div>
+
+<!-- ── Progress Bar ── -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Payment Progress (by consideration)</span>
+    <span>~₹1,25,87,449 / ₹1,72,71,760 = <strong>72.9%</strong></span>
+  </div>
+  <div class="progress-track"><div class="progress-fill partial" style="width:72.9%"></div></div>
+</div>
+
+<!-- ── Flat & Property Details ── -->
+<div class="info-grid">
+  <div class="info-box">
+    <div style="font-weight:800;font-size:.88rem;color:#0f172a;margin-bottom:10px">📋 Flat Details</div>
+    <div class="info-row"><span>Tower / Flat</span><span>Tower 12, Flat 807</span></div>
+    <div class="info-row"><span>Floor</span><span>8th Floor</span></div>
+    <div class="info-row"><span>Area</span><span>1926 sq ft</span></div>
+    <div class="info-row"><span>Basic Rate</span><span>₹7,900/sq ft</span></div>
+    <div class="info-row"><span>Car Parking</span><span>2 (Basement IV — ₹4,00,000)</span></div>
+    <div class="info-row"><span>Floor Rise</span><span>₹60/sq ft (6th–24th floor)</span></div>
+    <div class="info-row"><span>Agreement Date</span><span>14 Jun 2024</span></div>
+    <div class="info-row"><span>Buyers</span><span>Kush Jain &amp; Kanchan Handa</span></div>
+  </div>
+  <div class="info-box">
+    <div style="font-weight:800;font-size:.88rem;color:#0f172a;margin-bottom:10px">💰 Cost Breakdown</div>
+    <div class="info-row"><span>Sale Consideration</span><span>₹1,72,71,760</span></div>
+    <div class="info-row"><span>GST @ 5%</span><span>₹8,63,588</span></div>
+    <div class="info-row"><span>Total (Sale + GST)</span><span>₹1,81,35,348</span></div>
+    <div class="info-row"><span>Legal &amp; Documentation</span><span>₹11,800 (incl GST)</span></div>
+    <div class="info-row"><span>Maintenance (1 yr — original)</span><span style="text-decoration:line-through;color:#94a3b8">₹81,816</span></div>
+    <div class="info-row"><span>Maintenance (2 yrs — revised ₹96/sqft)</span><span style="color:#ea580c;font-weight:700">₹1,84,896 + GST</span></div>
+    <div class="info-row"><span>Corpus Fund</span><span>₹1,15,560</span></div>
+    <div class="info-row"><span>Other Charges Subtotal (revised)</span><span style="color:#ea580c">~₹3,21,501</span></div>
+    <div class="info-row"><span>Interior Deposit (post-handover)</span><span style="color:#ea580c">₹25,000</span></div>
+    <div class="info-row"><span>Grand Total (revised est.)</span><span style="color:#2563eb">~₹1,85,73,420</span></div>
+  </div>
+</div>
+
+<!-- ── Payment Schedule Table ── -->
+<div class="section">
+  <div class="section-title">📅 Payment Schedule &amp; Status</div>
+  <div style="overflow-x:auto">
+  <table class="inst-table">
+    <thead>
+      <tr>
+        <th>#&nbsp;&nbsp;Milestone</th>
+        <th>Consideration</th>
+        <th>+ GST (5%)</th>
+        <th>Total Demanded</th>
+        <th>Paid to Builder<br><span style="font-size:.65rem;font-weight:500;opacity:.8">👤 Own · 🏦 Bank</span></th>
+        <th>Payment Date</th>
+        <th>TDS Due</th>
+        <th>TDS Paid</th>
+        <th>TDS Date</th>
+        <th>Status</th>
+        <th>Documents</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- Installment 1: Booking -->
+      <tr style="background:#f0fdf4">
+        <td>
+          <div class="inst-num">01</div>
+          <div class="inst-name">On Booking</div>
+          <div class="inst-trigger">At time of booking</div>
+        </td>
+        <td><span class="money">₹2,50,000</span></td>
+        <td><span class="money-sm">₹12,500</span></td>
+        <td><span class="money">₹2,62,500</span></td>
+        <td>
+          <span class="money c-green">₹2,62,500</span><br>
+          <span class="chip chip-own">👤 Own ₹2,62,500</span><br>
+          <span class="chip" style="background:#f1f5f9;color:#94a3b8;border:1px solid #e2e8f0">🏦 Bank ₹0</span>
+        </td>
+        <td><span style="font-size:.78rem">RTGS: <b>13 Apr 2024</b><br>Receipt: 22 Apr 2024</span></td>
+        <td><span class="money-sm">₹2,500<br><span style="font-size:.68rem">(₹1,250 each)</span></span></td>
+        <td>
+          <div class="tds-row">
+            <span class="money c-green">₹51,816 combined</span>
+            <span class="tds-confirmed">✅ Confirmed</span>
+            <span class="tds-each" style="color:#16a34a;font-size:.68rem">TDS for installs 1+2+3 filed together</span>
+          </div>
+        </td>
+        <td><span style="font-size:.78rem;font-weight:700">28 Aug 2024</span><br><span style="font-size:.7rem;color:#94a3b8">(combined batch)</span></td>
+        <td><span class="badge b-paid">✅ PAID</span></td>
+        <td>
+          <div class="doc-links">
+            <a class="doc-link" href="https://drive.google.com/file/d/1-pKgD647gni1aETOHENsU2_XxabfoWD1/view?usp=drive_web" target="_blank">📄 Receipt #1600001158</a>
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/17_SKSRTs6Fygphp12Zek6ehXF3X2Ib5a/view?usp=drive_web" target="_blank">🧾 TDS Kush (Aug 24)</a>
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1si5hLlYvqKsPpS_q00jHKTqWylGc8qji/view?usp=drive_web" target="_blank">🧾 TDS Kanchan (Aug 24)</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Installment 2: 30 Days -->
+      <tr style="background:#f0fdf4">
+        <td>
+          <div class="inst-num">02</div>
+          <div class="inst-name">Within 30 Days</div>
+          <div class="inst-trigger">30 days from booking</div>
+        </td>
+        <td><span class="money">₹14,77,176</span><br><span class="money-sm">10% of consideration</span></td>
+        <td><span class="money-sm">₹73,859</span></td>
+        <td><span class="money">₹15,51,035</span></td>
+        <td>
+          <span class="money c-green">₹15,33,764</span><br>
+          <span class="money-sm">(net of TDS)</span><br>
+          <span class="chip chip-own">👤 Own ₹15,33,764</span><br>
+          <span class="chip" style="background:#f1f5f9;color:#94a3b8;border:1px solid #e2e8f0">🏦 Bank ₹0</span>
+        </td>
+        <td><span style="font-size:.78rem">RTGS: <b>06 Jun 2024</b><br>Receipt: 07 Jun 2024</span></td>
+        <td><span class="money-sm">₹14,772<br><span style="font-size:.68rem">(₹7,386 each)</span></span></td>
+        <td>
+          <div class="tds-row">
+            <span class="tds-confirmed">✅ See install 1+2+3 batch</span>
+            <span class="tds-each" style="color:#16a34a;font-size:.68rem">Combined with Aug 2024 filing</span>
+          </div>
+        </td>
+        <td><span style="font-size:.78rem;font-weight:700">28 Aug 2024</span><br><span style="font-size:.7rem;color:#94a3b8">(combined batch)</span></td>
+        <td><span class="badge b-paid">✅ PAID</span></td>
+        <td>
+          <div class="doc-links">
+            <a class="doc-link" href="https://drive.google.com/file/d/1YFWqDi5B8XVH8D7RICBbE5bqt7moeq1B/view?usp=drive_web" target="_blank">📄 Receipt #1600005149</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Installment 3: 60 Days -->
+      <tr style="background:#f0fdf4">
+        <td>
+          <div class="inst-num">03</div>
+          <div class="inst-name">Within 60 Days</div>
+          <div class="inst-trigger">60 days from booking</div>
+        </td>
+        <td><span class="money">₹34,54,352</span><br><span class="money-sm">20% of consideration</span></td>
+        <td><span class="money-sm">₹1,72,718</span></td>
+        <td><span class="money">₹36,27,070</span></td>
+        <td>
+          <span class="money c-green">₹35,92,525</span><br>
+          <span class="chip chip-bank">🏦 Bank ₹35,92,525</span><br>
+          <span class="chip" style="background:#f1f5f9;color:#94a3b8;border:1px solid #e2e8f0">👤 Own ₹0</span>
+        </td>
+        <td><span style="font-size:.78rem">RTGS: <b>06 Jul 2024</b><br>Receipt: 10 Jul 2024</span></td>
+        <td><span class="money-sm">₹34,544<br><span style="font-size:.68rem">(₹17,272 each)</span></span></td>
+        <td>
+          <div class="tds-row">
+            <span class="tds-confirmed">✅ See install 1+2+3 batch</span>
+            <span class="tds-each" style="color:#16a34a;font-size:.68rem">Combined with Aug 2024 filing</span>
+          </div>
+        </td>
+        <td><span style="font-size:.78rem;font-weight:700">28 Aug 2024</span><br><span style="font-size:.7rem;color:#94a3b8">(combined batch)</span></td>
+        <td><span class="badge b-paid">✅ PAID</span></td>
+        <td>
+          <div class="doc-links">
+            <a class="doc-link" href="https://drive.google.com/file/d/1kV6nAzKvPzALwzeUgdkT1ITV9uH6Axzt/view?usp=drive_web" target="_blank">📄 Receipt #1600007967</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Installment 4: 15th Floor Slab -->
+      <tr style="background:#f0fdf4">
+        <td>
+          <div class="inst-num">04</div>
+          <div class="inst-name">After 15th Floor Slab</div>
+          <div class="inst-trigger">Construction milestone</div>
+        </td>
+        <td><span class="money">₹34,54,352</span><br><span class="money-sm">20% of consideration</span></td>
+        <td><span class="money-sm">₹1,72,718</span></td>
+        <td><span class="money">₹36,27,070</span></td>
+        <td>
+          <span class="money c-green">₹35,92,527</span><br>
+          <span class="chip chip-bank">🏦 Bank ₹30,92,527</span><br>
+          <span class="chip chip-own">👤 Own ₹5,00,000</span>
+        </td>
+        <td><span style="font-size:.78rem">RTGS: <b>18 Oct 2024</b><br>Receipt: 19 Oct 2024</span></td>
+        <td><span class="money-sm">₹34,544<br><span style="font-size:.68rem">(₹17,272 each)</span></span></td>
+        <td>
+          <div class="tds-row">
+            <span class="money c-green">₹34,544</span>
+            <span class="tds-confirmed">✅ Confirmed</span>
+            <span class="tds-each">Kush: ₹17,272 &nbsp;|&nbsp; Kanchan: ₹17,272</span>
+          </div>
+        </td>
+        <td><span style="font-size:.78rem;font-weight:700">30 Nov 2024</span></td>
+        <td><span class="badge b-paid">✅ PAID</span></td>
+        <td>
+          <div class="doc-links">
+            <a class="doc-link" href="https://drive.google.com/file/d/1C0k0Fe7BWJqzg1dA7S81c-K425wd5dhZ/view?usp=drive_web" target="_blank">📄 Receipt #1600022662</a>
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1w92uNYj-uyP2_nER6nOLzzFivSBkJLsD/view?usp=drive_web" target="_blank">🧾 TDS Kush</a>
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1rMpPkoaWSSbIwOjRr9Hw42GfMpYBcaxf/view?usp=drive_web" target="_blank">🧾 TDS Kanchan</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Installment 5: 27th Floor Slab -->
+      <tr style="background:#f0fdf4">
+        <td>
+          <div class="inst-num">05</div>
+          <div class="inst-name">After 27th Floor Slab</div>
+          <div class="inst-trigger">Construction milestone</div>
+        </td>
+        <td><span class="money">₹25,90,764</span><br><span class="money-sm">15% of consideration</span></td>
+        <td><span class="money-sm">₹1,29,538</span></td>
+        <td><span class="money">₹27,20,302</span></td>
+        <td>
+          <span class="money c-green">₹26,94,395</span><br>
+          <span class="money-sm">Net of TDS · 2 receipts</span><br>
+          <span class="chip chip-bank">🏦 Bank ₹14,84,546</span><br>
+          <span class="chip chip-own">👤 Own ₹12,09,849</span>
+        </td>
+        <td><span style="font-size:.78rem">RTGS: <b>10 Jan 2025</b> (₹8,00,000)<br>RTGS: <b>01 Mar 2025</b> (₹18,94,395)<br>Receipts: 15 Jan + 06 Mar 2025</span></td>
+        <td><span class="money-sm">₹25,908<br><span style="font-size:.68rem">(₹12,954 each)</span></span></td>
+        <td>
+          <div class="tds-row">
+            <span class="money c-green">₹25,910 total</span>
+            <span class="tds-confirmed">✅ Fully Confirmed</span>
+            <span class="tds-each">Feb 2025: ₹7,694 + Mar 2025: ₹18,216</span>
+            <span class="tds-each">Kush: ₹12,955 &nbsp;|&nbsp; Kanchan: ₹12,955</span>
+          </div>
+        </td>
+        <td><span style="font-size:.78rem;font-weight:700">27 Feb 2025</span><br><span style="font-size:.78rem;font-weight:700">31 Mar 2025</span></td>
+        <td><span class="badge b-paid">✅ PAID</span></td>
+        <td>
+          <div class="doc-links">
+            <a class="doc-link" href="https://drive.google.com/file/d/1IaWtD8T6WNsOXny8SjX-C5Fg-JKcHVLY/view?usp=drive_web" target="_blank">📄 Receipt #1600030330</a>
+            <a class="doc-link" href="https://drive.google.com/file/d/1Jpmr3xUEHYPrdVTgrtMB6bgjNDVMUIUU/view?usp=drive_web" target="_blank">📄 Receipt #1600040042</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1axlZJHRnyTl_QOcGKMkGHicCcpYMMlII/view?usp=drive_link" target="_blank">🏦 NEFT UTR</a>
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1VJyQfbOMfn-ipFXGwfrFV128MzOKwNb0/view?usp=drive_web" target="_blank">🧾 Challan Kush (Feb)</a>
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1juLqX7LQDPlWWaSdKgnh4cGq3YDEkjlt/view?usp=drive_web" target="_blank">🧾 Challan Kanchan (Feb)</a>
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1Dgq8SdJLB3LiD8v6tnRrsteZgxCeRy4n/view?usp=drive_web" target="_blank">🧾 Challan Kush (Mar)</a>
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1aJu93vKnAGSD2RJZAeKCW88QUDNj6fJy/view?usp=drive_web" target="_blank">🧾 Challan Kanchan (Mar)</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1AWlC2Bc3JKTqb4iJrf6fbtEQ5jR1lVA_/view?usp=drive_web" target="_blank">📋 26QB Kush</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Installment 6: 39th Floor Slab -->
+      <tr style="background:#fffbeb">
+        <td>
+          <div class="inst-num">06</div>
+          <div class="inst-name">After 39th Floor Slab</div>
+          <div class="inst-trigger">Construction milestone</div>
+        </td>
+        <td><span class="money">₹25,90,764</span><br><span class="money-sm">15% of consideration</span></td>
+        <td><span class="money-sm">₹1,29,538</span></td>
+        <td><span class="money">₹27,20,302</span></td>
+        <td>
+          <span class="money" style="color:#d97706">₹13,47,197 paid</span><br>
+          <span class="money-sm">Net of TDS · 1 receipt</span><br>
+          <span class="chip chip-bank">🏦 Bank ₹9,19,197</span><br>
+          <span class="chip chip-own">👤 Own ₹4,28,000</span><br>
+          <span style="font-size:.7rem;color:#dc2626;font-weight:700">Balance: ~₹13,73,105</span>
+        </td>
+        <td><span style="font-size:.78rem">RTGS: <b>02 Jun 2025</b><br>Receipt: 05 Jun 2025</span></td>
+        <td><span class="money-sm">₹25,907<br><span style="font-size:.68rem">(₹12,954 each)</span></span></td>
+        <td>
+          <div class="tds-row">
+            <span class="money c-green">₹12,832 paid</span>
+            <span class="tds-confirmed">✅ Partial</span>
+            <span class="tds-each">Kush: ₹6,416 &nbsp;|&nbsp; Kanchan: ₹6,416</span>
+            <span style="font-size:.68rem;color:#dc2626">Balance TDS when rest paid: ~₹13,075</span>
+          </div>
+        </td>
+        <td><span style="font-size:.78rem;font-weight:700">30 Jul 2025</span></td>
+        <td><span class="badge b-partial">⚡ PARTIAL</span></td>
+        <td>
+          <div class="doc-links">
+            <a class="doc-link" href="https://drive.google.com/file/d/1-ygkFCtl1FMcjY05ZeaxP3maxWkzJx7A/view?usp=drive_web" target="_blank">📄 Receipt #1600007975</a>
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1PKdLQLSJ4WzDN-Uym1Amzq3EVQy1iaPq/view?usp=drive_web" target="_blank">🧾 Challan Kush</a>
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1sJyC2yR4W_c3VPaeBO3AjFY2aaMxV359/view?usp=drive_web" target="_blank">🧾 Challan Kanchan</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1PQEhjBDme4xjbc6nQAhe5H-kuSn3zxHe/view?usp=drive_web" target="_blank">📋 26QB Kush</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1STArhWmwMtMP6FGO7VSsjYz4nECm5tvs/view?usp=drive_web" target="_blank">📋 26QB Kanchan</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Installment 7: Flooring/Doors/Windows -->
+      <tr style="background:#fef2f2">
+        <td>
+          <div class="inst-num">07</div>
+          <div class="inst-name">Flooring, Doors &amp; Windows</div>
+          <div class="inst-trigger">After completion of unit work</div>
+        </td>
+        <td><span class="money">₹17,27,176</span><br><span class="money-sm">10% of consideration</span></td>
+        <td><span class="money-sm">₹86,359</span></td>
+        <td><span class="money">₹18,13,535</span></td>
+        <td><span class="money c-red">₹0</span><br><span class="money-sm">Not yet paid</span></td>
+        <td>—</td>
+        <td><span class="money-sm">₹17,272<br><span style="font-size:.68rem">(₹8,636 each)</span></span></td>
+        <td><span class="badge b-due">🔴 Due</span></td>
+        <td>—</td>
+        <td><span class="badge b-due">🔴 DUE</span></td>
+        <td>—</td>
+      </tr>
+
+      <!-- Installment 8: Registration/Handover -->
+      <tr style="background:#fef2f2">
+        <td>
+          <div class="inst-num">08</div>
+          <div class="inst-name">Registration / Handover</div>
+          <div class="inst-trigger">At time of possession</div>
+        </td>
+        <td><span class="money">₹17,27,176</span><br><span class="money-sm">10% of consideration</span></td>
+        <td><span class="money-sm">₹86,359</span></td>
+        <td><span class="money">₹18,13,535</span></td>
+        <td><span class="money c-red">₹0</span><br><span class="money-sm">Not yet paid</span></td>
+        <td>—</td>
+        <td><span class="money-sm">₹17,272<br><span style="font-size:.68rem">(₹8,636 each)</span></span></td>
+        <td><span class="badge b-due">🔴 Due</span></td>
+        <td>—</td>
+        <td><span class="badge b-due">🔴 DUE</span></td>
+        <td>—</td>
+      </tr>
+
+      <!-- Registration Charges -->
+      <tr style="background:#fff7ed">
+        <td colspan="3">
+          <div class="inst-name">Other Charges at Registration</div>
+          <div class="inst-trigger">Legal + Corpus Fund + Maintenance (see note)</div>
+        </td>
+        <td>
+          <span class="money" style="color:#dc2626">~₹3,21,501</span><br>
+          <span style="font-size:.68rem;color:#64748b">Legal ₹11,800 + Corpus ₹1,15,560 + Maint. ~₹1,93,941</span>
+        </td>
+        <td><span class="money c-red">₹0</span></td>
+        <td>—</td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>—</td>
+        <td><span class="badge b-due">🔴 DUE</span></td>
+        <td>
+          <div class="doc-links">
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1N2Bk2XE4DbEWNnqjZKjzwJK0bnxDRtv_/view?usp=drive_web" target="_blank">📄 Revision Circular</a>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Totals row -->
+      <tr style="background:#1e3a5f;color:#fff;font-weight:800">
+        <td colspan="3" style="text-align:right;color:#cbd5e1;font-size:.8rem;font-weight:700;padding:12px 14px">TOTALS (Installs 1–6 paid so far)</td>
+        <td style="color:#fff;font-size:.88rem">₹1,30,22,908</td>
+        <td style="font-size:.82rem">
+          <span class="chip chip-bank" style="display:block;margin-bottom:3px">🏦 Bank ₹90,88,795</span>
+          <span class="chip chip-own" style="display:block">👤 Own ₹39,34,113</span>
+        </td>
+        <td colspan="6"></td>
+      </tr>
+
+      <!-- Interior Deposit -->
+      <tr style="background:#fdf4ff">
+        <td colspan="3">
+          <div class="inst-name">Interior Work Deposit</div>
+          <div class="inst-trigger">Post-handover · ₹15k refundable + ₹10k non-refundable (debris removal B4)</div>
+        </td>
+        <td><span class="money" style="color:#7c3aed">₹25,000</span></td>
+        <td><span class="money c-red">₹0</span></td>
+        <td>—</td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>—</td>
+        <td><span class="badge b-due">🔴 DUE</span></td>
+        <td>—</td>
+      </tr>
+
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ── Total Investment Section ── -->
+<div class="section">
+  <div class="section-title">💸 Total Money Spent — Kush &amp; Kanchan (as of 15 Aug 2026)</div>
+
+  <!-- Big summary cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:28px">
+    <div class="card" style="border-top:3px solid #15803d">
+      <div class="card-label">Total Own Funds Out</div>
+      <div class="card-value" style="color:#15803d">₹54,99,551</div>
+      <div class="card-sub">Cash actually left your pocket</div>
+    </div>
+    <div class="card" style="border-top:3px solid #7c3aed">
+      <div class="card-label">Bank Loan Disbursed</div>
+      <div class="card-value c-purple">₹90,88,795</div>
+      <div class="card-sub">Paid to builder by SBI</div>
+    </div>
+    <div class="card" style="border-top:3px solid #2563eb">
+      <div class="card-label">Total Into Project</div>
+      <div class="card-value c-blue">₹1,45,88,346</div>
+      <div class="card-sub">Own funds + bank disbursed</div>
+    </div>
+    <div class="card" style="border-top:3px solid #ea580c">
+      <div class="card-label">Loan Still Outstanding</div>
+      <div class="card-value c-orange">₹87,72,430</div>
+      <div class="card-sub">Yet to be repaid to SBI</div>
+    </div>
+  </div>
+
+  <!-- Detailed breakdown table -->
+  <table class="inst-table" style="margin-bottom:20px">
+    <thead>
+      <tr>
+        <th style="text-align:left">Category</th>
+        <th>Kush</th>
+        <th>Kanchan</th>
+        <th>Combined</th>
+        <th style="text-align:left">Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr style="background:#f8fafc">
+        <td colspan="5" style="font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;padding:10px 14px">A. Own Funds Paid to Builder (direct)</td>
+      </tr>
+      <tr>
+        <td>Booking (Install 1, Apr 2024)</td>
+        <td>₹1,31,250</td><td>₹1,31,250</td>
+        <td style="font-weight:700">₹2,62,500</td>
+        <td style="color:#64748b;font-size:.78rem">50/50 split · pre-loan</td>
+      </tr>
+      <tr>
+        <td>30-day payment (Install 2, Jun 2024)</td>
+        <td>₹7,66,882</td><td>₹7,66,882</td>
+        <td style="font-weight:700">₹15,33,764</td>
+        <td style="color:#64748b;font-size:.78rem">50/50 split · pre-loan</td>
+      </tr>
+      <tr>
+        <td>15th Floor top-up (Install 4, Oct 2024)</td>
+        <td>₹2,50,000</td><td>₹2,50,000</td>
+        <td style="font-weight:700">₹5,00,000</td>
+        <td style="color:#64748b;font-size:.78rem">Own top-up above bank tranche</td>
+      </tr>
+      <tr>
+        <td>27th Floor own portion (Install 5, Jan–Mar 2025)</td>
+        <td>₹6,04,925</td><td>₹6,04,924</td>
+        <td style="font-weight:700">₹12,09,849</td>
+        <td style="color:#64748b;font-size:.78rem">Bank covered rest</td>
+      </tr>
+      <tr>
+        <td>39th Floor own portion (Install 6, Jun 2025)</td>
+        <td>₹2,14,000</td><td>₹2,14,000</td>
+        <td style="font-weight:700">₹4,28,000</td>
+        <td style="color:#64748b;font-size:.78rem">Bank covered rest</td>
+      </tr>
+      <tr style="background:#f0fdf4;font-weight:700">
+        <td>Sub-total A — Own funds to builder</td>
+        <td>₹19,67,057</td><td>₹19,67,056</td>
+        <td style="color:#15803d">₹39,34,113</td>
+        <td></td>
+      </tr>
+
+      <tr style="background:#f8fafc">
+        <td colspan="5" style="font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;padding:10px 14px">B. Loan EMI Payments (own funds paid to SBI — principal + interest)</td>
+      </tr>
+      <tr>
+        <td>EMI payments Jul 2024 – Aug 2026 (26 months)</td>
+        <td>₹7,76,387</td><td>₹7,76,387</td>
+        <td style="font-weight:700">₹15,52,774</td>
+        <td style="color:#64748b;font-size:.78rem">From Kanchan SBI a/c 30747570660 &amp; 43056003586</td>
+      </tr>
+      <tr style="background:#f0fdf4;font-weight:700">
+        <td>Sub-total B — EMI paid to bank</td>
+        <td>₹7,76,387</td><td>₹7,76,387</td>
+        <td style="color:#15803d">₹15,52,774</td>
+        <td></td>
+      </tr>
+
+      <tr style="background:#f8fafc">
+        <td colspan="5" style="font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;padding:10px 14px">C. TDS Paid (Form 26QB · Section 194-IA)</td>
+      </tr>
+      <tr>
+        <td>TDS — Aug 2024 (Installs 1+2+3 combined)</td>
+        <td style="color:#2563eb">₹25,908</td><td style="color:#7c3aed">₹25,908</td>
+        <td style="font-weight:700">₹51,816</td>
+        <td style="color:#64748b;font-size:.78rem">28 Aug 2024</td>
+      </tr>
+      <tr>
+        <td>TDS — Nov 2024 (Install 4)</td>
+        <td style="color:#2563eb">₹17,272</td><td style="color:#7c3aed">₹17,272</td>
+        <td style="font-weight:700">₹34,544</td>
+        <td style="color:#64748b;font-size:.78rem">30 Nov 2024</td>
+      </tr>
+      <tr>
+        <td>TDS — Feb 2025 (Install 5 partial)</td>
+        <td style="color:#2563eb">₹3,847</td><td style="color:#7c3aed">₹3,847</td>
+        <td style="font-weight:700">₹7,694</td>
+        <td style="color:#64748b;font-size:.78rem">28 Feb 2025</td>
+      </tr>
+      <tr>
+        <td>TDS — Mar 2025 (Install 5 balance)</td>
+        <td style="color:#2563eb">₹9,108</td><td style="color:#7c3aed">₹9,108</td>
+        <td style="font-weight:700">₹18,216</td>
+        <td style="color:#64748b;font-size:.78rem">31 Mar 2025</td>
+      </tr>
+      <tr>
+        <td>TDS — Jul 2025 (Install 6 partial)</td>
+        <td style="color:#2563eb">₹6,416</td><td style="color:#7c3aed">₹6,416</td>
+        <td style="font-weight:700">₹12,832</td>
+        <td style="color:#64748b;font-size:.78rem">30 Jul 2025</td>
+      </tr>
+      <tr style="background:#f0fdf4;font-weight:700">
+        <td>Sub-total C — TDS paid</td>
+        <td style="color:#2563eb">₹62,551</td><td style="color:#7c3aed">₹62,551</td>
+        <td style="color:#15803d">₹1,25,102</td>
+        <td></td>
+      </tr>
+
+      <tr style="background:#f8fafc">
+        <td colspan="5" style="font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;padding:10px 14px">D. Loan Processing &amp; Ancillary Charges</td>
+      </tr>
+      <tr>
+        <td>Loan processing fee (Jul 2024)</td>
+        <td>₹5,959</td><td>₹5,959</td>
+        <td style="font-weight:700">₹11,918</td>
+        <td style="color:#64748b;font-size:.78rem">CERSAI ₹118 + processing ₹11,800</td>
+      </tr>
+      <tr style="background:#f0fdf4;font-weight:700">
+        <td>Sub-total D — Loan charges</td>
+        <td>₹5,959</td><td>₹5,959</td>
+        <td style="color:#15803d">₹11,918</td>
+        <td></td>
+      </tr>
+
+      <!-- Grand total row -->
+      <tr style="background:#1e3a5f;color:#fff;font-weight:800;font-size:.92rem">
+        <td style="color:#fff">GRAND TOTAL OWN FUNDS SPENT</td>
+        <td style="color:#86efac">₹28,11,954</td>
+        <td style="color:#c4b5fd">₹28,11,953</td>
+        <td style="color:#fde68a;font-size:1rem">₹56,23,907</td>
+        <td style="color:#94a3b8;font-size:.75rem">Actual cash out of pocket</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Split visualization -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:18px">
+      <div style="font-weight:800;color:#1e40af;margin-bottom:12px;font-size:.9rem">👤 Kush Jain — Total Spent</div>
+      <div style="font-size:1.6rem;font-weight:800;color:#1e3a5f;margin-bottom:8px">₹28,11,954</div>
+      <div style="font-size:.8rem;color:#374151;line-height:2">
+        <div style="display:flex;justify-content:space-between"><span>Own funds to builder</span><span style="font-weight:700">₹19,67,057</span></div>
+        <div style="display:flex;justify-content:space-between"><span>EMI to SBI (half share)</span><span style="font-weight:700">₹7,76,387</span></div>
+        <div style="display:flex;justify-content:space-between"><span>TDS (Form 26QB)</span><span style="font-weight:700">₹62,551</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Loan processing (half)</span><span style="font-weight:700">₹5,959</span></div>
+      </div>
+    </div>
+    <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:12px;padding:18px">
+      <div style="font-weight:800;color:#7e22ce;margin-bottom:12px;font-size:.9rem">👤 Kanchan Handa — Total Spent</div>
+      <div style="font-size:1.6rem;font-weight:800;color:#4c1d95;margin-bottom:8px">₹28,11,953</div>
+      <div style="font-size:.8rem;color:#374151;line-height:2">
+        <div style="display:flex;justify-content:space-between"><span>Own funds to builder</span><span style="font-weight:700">₹19,67,056</span></div>
+        <div style="display:flex;justify-content:space-between"><span>EMI to SBI (half share)</span><span style="font-weight:700">₹7,76,387</span></div>
+        <div style="display:flex;justify-content:space-between"><span>TDS (Form 26QB)</span><span style="font-weight:700">₹62,551</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Loan processing (half)</span><span style="font-weight:700">₹5,959</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:.8rem;color:#78350f">
+    <strong>Note:</strong> EMI split assumed 50/50 as both are co-borrowers (loan is in Kanchan's name but Kush is co-borrower). Actual EMI debits from Kanchan's SBI accounts — Kush's share is an internal reimbursement. Loan processing fees debited from loan account. Outstanding loan of ₹87,72,430 is a shared future liability — not counted above as it hasn't been paid yet.
+  </div>
+</div>
+
+<!-- ── TDS Detail Section ── -->
+<div class="section">
+  <div class="section-title">🧾 TDS Payments — Detail (Form 26QB · Section 194-IA) &nbsp;·&nbsp; <span style="color:#16a34a;font-weight:800">All 5 Batches Confirmed ✅</span></div>
+  <div class="tds-batch-grid">
+
+    <!-- Batch 0: Aug 2024 (NEW) -->
+    <div class="tds-batch" style="border-left-color:#ea580c">
+      <div class="tds-batch-title">Batch 1 — 28 August 2024</div>
+      <div class="tds-batch-sub">FY 2024-25 · AY 2025-26 · Covers installments 1+2+3 combined (Booking Apr + 30-day Jun + 60-day Jul 2024)</div>
+      <div class="tds-persons">
+        <div class="tds-person kush">
+          <div class="tds-person-name">Kush Jain</div>
+          <div class="tds-person-pan">PAN: ALVPJ0112C</div>
+          <div class="tds-person-amount c-blue">₹25,908</div>
+          <div class="tds-person-base">On ₹25,90,764 (installs 1+2+3)</div>
+          <div class="tds-person-ack">Ack: AL10579192</div>
+          <div class="tds-person-ack">CIN: 24082800128897SBIN</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/17_SKSRTs6Fygphp12Zek6ehXF3X2Ib5a/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+          </div>
+        </div>
+        <div class="tds-person kanchan">
+          <div class="tds-person-name">Kanchan Handa</div>
+          <div class="tds-person-pan">PAN: AMTPH8963J</div>
+          <div class="tds-person-amount c-purple">₹25,908</div>
+          <div class="tds-person-base">On ₹25,90,764 (installs 1+2+3)</div>
+          <div class="tds-person-ack">Ack: AL10580091</div>
+          <div class="tds-person-ack">CIN: 24082800129720SBIN</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1si5hLlYvqKsPpS_q00jHKTqWylGc8qji/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+          </div>
+        </div>
+      </div>
+      <div class="tds-total-row">
+        <span class="tds-total-label">Total TDS This Batch</span>
+        <span class="tds-total-val">₹51,816</span>
+      </div>
+    </div>
+
+    <!-- Batch 1: Nov 2024 -->
+    <div class="tds-batch" style="border-left-color:#2563eb">
+      <div class="tds-batch-title">Batch 2 — 30 November 2024</div>
+      <div class="tds-batch-sub">FY 2024-25 · AY 2025-26 · For: 15th Floor Slab installment (Oct 2024 payment)</div>
+      <div class="tds-persons">
+        <div class="tds-person kush">
+          <div class="tds-person-name">Kush Jain</div>
+          <div class="tds-person-pan">PAN: ALVPJ0112C</div>
+          <div class="tds-person-amount c-blue">₹17,272</div>
+          <div class="tds-person-base">On ₹17,27,176</div>
+          <div class="tds-person-ack">Ack: AL17681322</div>
+          <div class="tds-person-ack">CIN: 24113000060248SBIN</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1w92uNYj-uyP2_nER6nOLzzFivSBkJLsD/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1UmvftxEIAKnZUJYcDkmLpD-b0py9qO6A/view?usp=drive_web" target="_blank">📋 Statement</a>
+          </div>
+        </div>
+        <div class="tds-person kanchan">
+          <div class="tds-person-name">Kanchan Handa</div>
+          <div class="tds-person-pan">PAN: AMTPH8963J</div>
+          <div class="tds-person-amount c-purple">₹17,272</div>
+          <div class="tds-person-base">On ₹17,27,176</div>
+          <div class="tds-person-ack">Ack: AL17680946</div>
+          <div class="tds-person-ack">CIN: 24113000059759SBIN</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1rMpPkoaWSSbIwOjRr9Hw42GfMpYBcaxf/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1QyaD9UA74OhAvGOA25M_dqESVwaDpV5e/view?usp=drive_web" target="_blank">📋 Statement</a>
+          </div>
+        </div>
+      </div>
+      <div class="tds-total-row">
+        <span class="tds-total-label">Total TDS This Batch</span>
+        <span class="tds-total-val">₹34,544</span>
+      </div>
+    </div>
+
+    <!-- Batch 2: Feb 2025 -->
+    <div class="tds-batch" style="border-left-color:#7c3aed">
+      <div class="tds-batch-title">Batch 3 — 27 February 2025</div>
+      <div class="tds-batch-sub">FY 2024-25 · AY 2025-26 · For: Jan 2025 payment (partial 27th floor, ₹3,84,616 each)</div>
+      <div class="tds-persons">
+        <div class="tds-person kush">
+          <div class="tds-person-name">Kush Jain</div>
+          <div class="tds-person-pan">PAN: ALVPJ0112C</div>
+          <div class="tds-person-amount c-blue">₹3,847</div>
+          <div class="tds-person-base">On ₹3,84,616 · Payment: 10-Jan-2025</div>
+          <div class="tds-person-ack">Ack: AL24755253</div>
+          <div class="tds-person-ack">CIN: 25022700122023HDFC</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1VJyQfbOMfn-ipFXGwfrFV128MzOKwNb0/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1AWlC2Bc3JKTqb4iJrf6fbtEQ5jR1lVA_/view?usp=drive_web" target="_blank">📋 26QB Statement</a>
+          </div>
+        </div>
+        <div class="tds-person kanchan">
+          <div class="tds-person-name">Kanchan Handa</div>
+          <div class="tds-person-pan">PAN: AMTPH8963J</div>
+          <div class="tds-person-amount c-purple">₹3,847</div>
+          <div class="tds-person-base">On ₹3,84,616 · Payment: 10-Jan-2025</div>
+          <div class="tds-person-ack">Ack: AL24757600</div>
+          <div class="tds-person-ack">CIN: 25022700123987HDFC</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1juLqX7LQDPlWWaSdKgnh4cGq3YDEkjlt/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1ROezogkCa7A8_vCX2MGtLpLc_HYDhmd1/view?usp=drive_web" target="_blank">📋 26QB Statement</a>
+          </div>
+        </div>
+      </div>
+      <div class="tds-total-row">
+        <span class="tds-total-label">Total TDS This Batch</span>
+        <span class="tds-total-val">₹7,694</span>
+      </div>
+    </div>
+
+    <!-- Batch 2.5: Mar 2025 (NEW) -->
+    <div class="tds-batch" style="border-left-color:#0891b2">
+      <div class="tds-batch-title">Batch 4 — 31 March 2025</div>
+      <div class="tds-batch-sub">FY 2024-25 · AY 2025-26 · Completes 27th floor TDS (remaining ₹9,10,767 each after Feb 2025 batch)</div>
+      <div class="tds-persons">
+        <div class="tds-person kush">
+          <div class="tds-person-name">Kush Jain</div>
+          <div class="tds-person-pan">PAN: ALVPJ0112C</div>
+          <div class="tds-person-amount c-blue">₹9,108</div>
+          <div class="tds-person-base">On ₹9,10,767</div>
+          <div class="tds-person-ack">Ack: AL28111241</div>
+          <div class="tds-person-ack">CIN: 25033100368861SBIN</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1Dgq8SdJLB3LiD8v6tnRrsteZgxCeRy4n/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1-_XXN2THOAIou0y4gmu0jb3sMVPdvNTK/view?usp=drive_web" target="_blank">📋 Statement</a>
+          </div>
+        </div>
+        <div class="tds-person kanchan">
+          <div class="tds-person-name">Kanchan Handa</div>
+          <div class="tds-person-pan">PAN: AMTPH8963J</div>
+          <div class="tds-person-amount c-purple">₹9,108</div>
+          <div class="tds-person-base">On ₹9,10,767</div>
+          <div class="tds-person-ack">Ack: AL27983023</div>
+          <div class="tds-person-ack">CIN: 25033100011027SBIN</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1aJu93vKnAGSD2RJZAeKCW88QUDNj6fJy/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1dcPqoJ8eK6HsFTCGEXKsnGQ3WgynJ1Ob/view?usp=drive_web" target="_blank">📋 Statement</a>
+          </div>
+        </div>
+      </div>
+      <div class="tds-total-row">
+        <span class="tds-total-label">Total TDS This Batch</span>
+        <span class="tds-total-val">₹18,216</span>
+      </div>
+    </div>
+
+    <!-- Batch 3: Jul 2025 -->
+    <div class="tds-batch" style="border-left-color:#16a34a">
+      <div class="tds-batch-title">Batch 5 — 30 July 2025</div>
+      <div class="tds-batch-sub">FY 2025-26 · AY 2026-27 · For: Jun 2025 payment (partial 39th floor, ₹6,41,522 each)</div>
+      <div class="tds-persons">
+        <div class="tds-person kush">
+          <div class="tds-person-name">Kush Jain</div>
+          <div class="tds-person-pan">PAN: ALVPJ0112C</div>
+          <div class="tds-person-amount c-blue">₹6,416</div>
+          <div class="tds-person-base">On ₹6,41,522 · Payment: 02-Jun-2025</div>
+          <div class="tds-person-ack">Ack: AM08777204</div>
+          <div class="tds-person-ack">CIN: 25073000353443HDFC</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kush" href="https://drive.google.com/file/d/1PKdLQLSJ4WzDN-Uym1Amzq3EVQy1iaPq/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1PQEhjBDme4xjbc6nQAhe5H-kuSn3zxHe/view?usp=drive_web" target="_blank">📋 26QB Statement</a>
+          </div>
+        </div>
+        <div class="tds-person kanchan">
+          <div class="tds-person-name">Kanchan Handa</div>
+          <div class="tds-person-pan">PAN: AMTPH8963J</div>
+          <div class="tds-person-amount c-purple">₹6,416</div>
+          <div class="tds-person-base">On ₹6,41,522 · Payment: 02-Jun-2025</div>
+          <div class="tds-person-ack">Ack: AM08777720</div>
+          <div class="tds-person-ack">CIN: 25073000354860HDFC</div>
+          <div class="doc-links" style="margin-top:8px">
+            <a class="doc-link tds-kanchan" href="https://drive.google.com/file/d/1sJyC2yR4W_c3VPaeBO3AjFY2aaMxV359/view?usp=drive_web" target="_blank">🧾 Challan Receipt</a>
+            <a class="doc-link challan" href="https://drive.google.com/file/d/1STArhWmwMtMP6FGO7VSsjYz4nECm5tvs/view?usp=drive_web" target="_blank">📋 26QB Statement</a>
+          </div>
+        </div>
+      </div>
+      <div class="tds-total-row">
+        <span class="tds-total-label">Total TDS This Batch</span>
+        <span class="tds-total-val">₹12,832</span>
+      </div>
+    </div>
+
+    <!-- Running Total Card -->
+    <div class="tds-batch" style="border-left-color:#16a34a;background:#f0fdf4">
+      <div class="tds-batch-title" style="color:#16a34a">✅ TDS Running Total</div>
+      <div class="tds-batch-sub">All batches confirmed · No gaps</div>
+      <div style="font-size:.83rem">
+        <div class="info-row" style="padding:6px 0;border-bottom:1px solid #dcfce7"><span style="color:#64748b">Batch 1 — 28 Aug 2024</span><span style="font-weight:700">₹51,816</span></div>
+        <div class="info-row" style="padding:6px 0;border-bottom:1px solid #dcfce7"><span style="color:#64748b">Batch 2 — 30 Nov 2024</span><span style="font-weight:700">₹34,544</span></div>
+        <div class="info-row" style="padding:6px 0;border-bottom:1px solid #dcfce7"><span style="color:#64748b">Batch 3 — 27 Feb 2025</span><span style="font-weight:700">₹7,694</span></div>
+        <div class="info-row" style="padding:6px 0;border-bottom:1px solid #dcfce7"><span style="color:#64748b">Batch 4 — 31 Mar 2025</span><span style="font-weight:700">₹18,216</span></div>
+        <div class="info-row" style="padding:6px 0;border-bottom:1px solid #dcfce7"><span style="color:#64748b">Batch 5 — 30 Jul 2025</span><span style="font-weight:700">₹12,832</span></div>
+        <div class="info-row" style="padding:8px 0;margin-top:4px"><span style="font-weight:800;color:#16a34a">Grand Total TDS Paid</span><span style="font-weight:900;font-size:1.1rem;color:#16a34a">₹1,25,102</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Remaining Payments ── -->
+<div class="section">
+  <div class="section-title">🔴 Remaining Payments Summary</div>
+  <div class="info-box">
+    <div class="info-row"><span>39th Floor Slab — Balance (~₹13,07,720 consid. + GST)</span><span style="color:#dc2626;font-weight:800">~₹13,73,105</span></div>
+    <div class="info-row"><span>After Flooring, Doors &amp; Windows (₹17,27,176 + GST)</span><span style="color:#dc2626;font-weight:800">₹18,13,535</span></div>
+    <div class="info-row"><span>At Registration / Handover (₹17,27,176 + GST)</span><span style="color:#dc2626;font-weight:800">₹18,13,535</span></div>
+    <div class="info-row"><span>Legal &amp; Documentation (at registration)</span><span style="color:#dc2626;font-weight:800">₹11,800</span></div>
+    <div class="info-row"><span>Corpus Fund (at registration)</span><span style="color:#dc2626;font-weight:800">₹1,15,560</span></div>
+    <div class="info-row"><span>Maintenance — 2 yrs (₹96/sqft × 1926 sqft + GST)</span><span style="color:#dc2626;font-weight:800">~₹1,93,941</span></div>
+    <div class="info-row"><span>Interior Deposit — post-handover (₹15k refundable + ₹10k non-refundable)</span><span style="color:#ea580c;font-weight:800">₹25,000</span></div>
+    <div class="info-row" style="border-top:2px solid #e2e8f0;margin-top:4px;padding-top:8px"><span style="font-weight:800">Total Remaining</span><span style="color:#dc2626;font-size:1.1rem;font-weight:900">~₹53,47,476</span></div>
+  </div>
+  <div style="margin-top:10px;font-size:.78rem;color:#94a3b8;padding:0 4px">
+    * Remaining amounts before TDS deduction. Net payable to builder on sale consideration = Total − 1% TDS (TDS paid separately to IT Dept within 30 days). Maintenance + corpus + legal are not subject to TDS.
+  </div>
+</div>
+
+<!-- ── Builder Disputes / Additional Charges ── -->
+<div class="section">
+  <div class="section-title">⚠️ Builder Demands &amp; Disputes</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px">
+
+    <div style="background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid #16a34a">
+      <div style="font-weight:800;font-size:.95rem;color:#0f172a;margin-bottom:6px">🔧 Maintenance Period Revision</div>
+      <div style="font-size:.78rem;color:#64748b;margin-bottom:14px">Circular dated 13 Jul 2026 — OC received · Accepted</div>
+      <div style="font-size:.83rem;line-height:1.9">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9"><span style="color:#64748b">Rate</span><span style="font-weight:600">₹96/sqft × 1926 sqft = ₹1,84,896</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9"><span style="color:#64748b">GST @ 5%</span><span style="font-weight:600">~₹9,245</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9"><span style="color:#64748b">Total payable at registration</span><span style="font-weight:700;color:#dc2626">~₹1,93,941</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:#64748b">Status</span><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:700">ACCEPTED · DUE AT REGISTRATION</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <a class="doc-link challan" href="https://drive.google.com/file/d/1N2Bk2XE4DbEWNnqjZKjzwJK0bnxDRtv_/view?usp=drive_web" target="_blank">📄 Circular (13 Jul 2026)</a>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid #7c3aed">
+      <div style="font-weight:800;font-size:.95rem;color:#0f172a;margin-bottom:6px">🏗️ Interior Work Deposit (post-handover)</div>
+      <div style="font-size:.78rem;color:#64748b;margin-bottom:14px">Payable after possession · Not part of original sale agreement</div>
+      <div style="font-size:.83rem;line-height:1.9">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9"><span style="color:#64748b">Refundable deposit</span><span style="font-weight:700;color:#16a34a">₹15,000 ✅ refundable</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9"><span style="color:#64748b">Non-refundable (debris/dump removal)</span><span style="font-weight:700;color:#dc2626">₹10,000 ❌ non-refundable</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9"><span style="color:#64748b">Purpose of non-refundable charge</span><span style="font-weight:600;font-size:.78rem">Removal of interior waste<br>from Basement 4</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:#64748b">Total payable</span><span style="font-weight:700;color:#ea580c">₹25,000</span></div>
+      </div>
+      <div style="margin-top:10px;font-size:.75rem;color:#94a3b8;font-style:italic">Refundable ₹15,000 to be claimed back after interior work completion. Keep acknowledgement receipt when paying.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Home Loan Details ── -->
+<div class="section">
+  <div class="section-title">🏦 Home Loan Details</div>
+
+  <!-- Loan summary cards -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-bottom:28px">
+    <div class="card"><div class="card-label">Sanctioned Amount</div><div class="card-value c-blue">₹1,25,00,000</div><div class="card-sub">SBI Home Loan</div></div>
+    <div class="card"><div class="card-label">Total Disbursed to Builder</div><div class="card-value c-purple">₹90,88,795</div><div class="card-sub">5 tranches · bank paid</div></div>
+    <div class="card"><div class="card-label">Outstanding Balance</div><div class="card-value c-red">₹87,72,430</div><div class="card-sub">as of 15 Aug 2026</div></div>
+    <div class="card"><div class="card-label">Principal Repaid</div><div class="card-value c-green">₹3,16,365</div><div class="card-sub">of ₹90,88,795 disbursed</div></div>
+    <div class="card"><div class="card-label">Interest Paid (to bank)</div><div class="card-value c-orange">₹12,24,491</div><div class="card-sub">25 months · Jul 2024–Aug 2026</div></div>
+    <div class="card"><div class="card-label">EMI Paid (own funds)</div><div class="card-value c-blue">₹15,52,774</div><div class="card-sub">Kush + Kanchan combined</div></div>
+  </div>
+
+  <!-- Loan details info box -->
+  <div class="info-box" style="margin-bottom:28px">
+    <div class="info-row"><span>Borrowers</span><span><strong>Mrs. Kanchan Handa</strong> (primary) &amp; <strong>Mr. Kush Jain</strong> (co-borrower)</span></div>
+    <div class="info-row"><span>Lender</span><span>State Bank of India — Central Ordnance Depot, Agra (SBIN0010628)</span></div>
+    <div class="info-row"><span>Bank PAN</span><span>AAACS8577K</span></div>
+    <div class="info-row"><span>Loan Account No.</span><span>43130076119</span></div>
+    <div class="info-row"><span>Date of Sanction</span><span>06 Jul 2024</span></div>
+    <div class="info-row"><span>Sanctioned Amount</span><span>₹1,25,00,000</span></div>
+    <div class="info-row"><span>Loan Term</span><span>360 months (30 years)</span></div>
+    <div class="info-row"><span>Remaining Tenure</span><span>335 months (as of 15 Aug 2026)</span></div>
+    <div class="info-row"><span>Current EMI</span><span>₹66,746 / month</span></div>
+    <div class="info-row"><span>Interest Rate History</span><span>8.65% → 8.45% (06 Jul 2024) → 8.20% (15 Feb 2025) → 7.95% (15 Apr 2025) → 7.45% (15 Jun 2025) → <strong>7.20%</strong> (15 Dec 2025)</span></div>
+  </div>
+
+  <!-- Official Interest Certificates — Income Tax -->
+  <div style="font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:10px">Official Interest Certificates (Income Tax — Section 24b)</div>
+  <table class="inst-table" style="margin-bottom:10px">
+    <thead><tr><th>Financial Year</th><th>Period</th><th>Principal Repaid</th><th>Interest Paid</th><th>Total Repayment</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>FY 2024-25</strong></td>
+        <td>Jul 2024 – Mar 2025</td>
+        <td>~₹27,000</td>
+        <td style="font-weight:700;color:#ea580c">~₹3,51,328</td>
+        <td>~₹3,78,328</td>
+        <td><span style="background:#fef9c3;color:#92400e;padding:2px 7px;border-radius:4px;font-size:.72rem;font-weight:700">FROM STATEMENT</span></td>
+      </tr>
+      <tr style="background:#f0fdf4">
+        <td><strong>FY 2025-26</strong></td>
+        <td>Apr 2025 – Mar 2026</td>
+        <td style="font-weight:700;color:#16a34a">₹1,31,844</td>
+        <td style="font-weight:700;color:#ea580c">₹6,60,356</td>
+        <td style="font-weight:700">₹7,92,200</td>
+        <td><span style="background:#dcfce7;color:#166534;padding:2px 7px;border-radius:4px;font-size:.72rem;font-weight:700">CERTIFIED</span></td>
+      </tr>
+      <tr style="background:#eff6ff">
+        <td><strong>FY 2026-27</strong></td>
+        <td>Apr 2026 – Mar 2027</td>
+        <td style="color:#2563eb">₹1,00,228 (proj.)</td>
+        <td style="font-weight:700;color:#ea580c">₹7,00,778 (proj.)</td>
+        <td style="font-weight:700">₹8,01,006 (proj.)</td>
+        <td><span style="background:#dbeafe;color:#1e40af;padding:2px 7px;border-radius:4px;font-size:.72rem;font-weight:700">PROVISIONAL</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="font-size:.76rem;color:#64748b;margin-bottom:24px;font-style:italic">Both Kanchan &amp; Kush can each claim up to ₹2,00,000/yr deduction under Section 24b on home loan interest. FY 2025-26 certified interest: ₹6,60,356 (₹3,30,178 each if split equally).</div>
+
+  <!-- Own funds vs Bank breakdown -->
+  <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:18px;margin-bottom:28px">
+    <div style="font-weight:700;font-size:.88rem;color:#1e40af;margin-bottom:12px">💰 Funding Breakdown — Who Paid What</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:.85rem">
+      <div style="background:#fff;border-radius:8px;padding:14px;border-left:3px solid #7c3aed">
+        <div style="font-weight:700;color:#7c3aed;margin-bottom:6px">🏦 Bank (SBI Loan)</div>
+        <div style="font-size:1.3rem;font-weight:800;color:#4c1d95">₹90,88,795</div>
+        <div style="color:#64748b;font-size:.78rem;margin-top:4px">Disbursed directly to builder in 5 tranches</div>
+      </div>
+      <div style="background:#fff;border-radius:8px;padding:14px;border-left:3px solid #16a34a">
+        <div style="font-weight:700;color:#16a34a;margin-bottom:6px">👥 Kush + Kanchan (Own Funds)</div>
+        <div style="font-size:1.3rem;font-weight:800;color:#14532d">₹15,52,774</div>
+        <div style="color:#64748b;font-size:.78rem;margin-top:4px">Paid to bank as EMI (principal + interest)</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.78rem;color:#64748b;font-style:italic">Note: Direct own-fund payments to builder (₹40,41,592) are tracked separately in the Payment Schedule above.</div>
+  </div>
+
+  <!-- Bank Disbursements to Builder -->
+  <div style="font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:10px">Bank Disbursements to Builder (5 Tranches)</div>
+  <table class="inst-table" style="margin-bottom:28px">
+    <thead><tr><th>#</th><th>Date</th><th>Amount</th><th>Running Total</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td style="text-align:center">1</td><td>06 Jul 2024</td><td style="font-weight:700;color:#7c3aed">₹35,92,525</td><td>₹35,92,525</td><td>Initial disbursement</td></tr>
+      <tr><td style="text-align:center">2</td><td>18 Oct 2024</td><td style="font-weight:700;color:#7c3aed">₹30,92,527</td><td>₹66,85,052</td><td>2nd tranche</td></tr>
+      <tr><td style="text-align:center">3</td><td>10 Jan 2025</td><td style="font-weight:700;color:#7c3aed">₹1,92,000</td><td>₹68,77,052</td><td>3rd tranche</td></tr>
+      <tr><td style="text-align:center">4</td><td>01 Mar 2025</td><td style="font-weight:700;color:#7c3aed">₹12,92,546</td><td>₹81,69,598</td><td>4th tranche</td></tr>
+      <tr><td style="text-align:center">5</td><td>02 Jun 2025</td><td style="font-weight:700;color:#7c3aed">₹9,19,197</td><td>₹90,88,795</td><td>5th tranche</td></tr>
+      <tr style="background:#f8fafc;font-weight:800"><td colspan="2" style="text-align:right">Total Disbursed</td><td style="color:#7c3aed">₹90,88,795</td><td colspan="2">of ₹1,25,00,000 sanctioned</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Monthly EMI Payments -->
+  <div style="font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:10px">Monthly EMI Payments (Own Funds → SBI Loan)</div>
+  <table class="inst-table" style="margin-bottom:28px">
+    <thead><tr><th>Month</th><th>Paid to Bank</th><th>Interest Charged</th><th>Principal Reduction</th><th>Outstanding Balance</th></tr></thead>
+    <tbody>
+      <tr><td>Jul 2024</td><td>₹11,918 <span style="font-size:.72rem;color:#94a3b8">(proc. fee)</span></td><td>₹21,624</td><td>—</td><td>₹36,14,149</td></tr>
+      <tr><td>Aug 2024</td><td>₹27,497</td><td>₹25,750</td><td>₹1,747</td><td>₹35,86,652</td></tr>
+      <tr><td>Sep 2024</td><td>₹27,497</td><td>₹24,930</td><td>₹2,567</td><td>₹35,84,905</td></tr>
+      <tr><td>Oct 2024</td><td>₹27,497</td><td>₹24,930</td><td>₹2,567</td><td>₹35,82,338</td></tr>
+      <tr><td>Nov 2024</td><td>₹51,127</td><td>₹46,316</td><td>₹4,811</td><td>₹66,59,503</td></tr>
+      <tr><td>Dec 2024</td><td>₹51,183</td><td>₹47,847</td><td>₹3,336</td><td>₹66,54,636</td></tr>
+      <tr><td>Jan 2025</td><td>₹52,000</td><td>₹48,779</td><td>₹3,221</td><td>₹66,50,483</td></tr>
+      <tr><td>Feb 2025</td><td>₹52,574</td><td>₹43,736</td><td>₹8,838</td><td>₹68,38,688</td></tr>
+      <tr><td>Mar 2025</td><td>₹60,601</td><td>₹56,581</td><td>₹4,020</td><td>₹81,14,369</td></tr>
+      <tr><td>Apr 2025</td><td>₹62,000</td><td>₹53,833</td><td>₹8,167</td><td>₹81,08,950</td></tr>
+      <tr><td>May 2025</td><td>₹62,000</td><td>₹54,765</td><td>₹7,235</td><td>₹81,00,783</td></tr>
+      <tr><td>Jun 2025</td><td>₹67,000</td><td>₹56,762</td><td>₹10,238</td><td>₹90,07,745</td></tr>
+      <tr><td>Jul 2025</td><td>₹66,800</td><td>₹57,000</td><td>₹9,800</td><td>₹89,97,707</td></tr>
+      <tr><td>Aug 2025</td><td>₹66,800</td><td>₹56,938</td><td>₹9,862</td><td>₹89,87,907</td></tr>
+      <tr><td>Sep 2025</td><td>₹66,800</td><td>₹55,084</td><td>₹11,716</td><td>₹89,78,045</td></tr>
+      <tr><td>Oct 2025</td><td>₹66,800</td><td>₹56,802</td><td>₹9,998</td><td>₹89,66,329</td></tr>
+      <tr><td>Nov 2025</td><td>₹66,800</td><td>₹54,910</td><td>₹11,890</td><td>₹89,56,331</td></tr>
+      <tr><td>Dec 2025</td><td>₹66,800</td><td>₹55,649</td><td>₹11,151</td><td>₹89,44,441</td></tr>
+      <tr><td>Jan 2026</td><td>₹66,800</td><td>₹54,693</td><td>₹12,107</td><td>₹89,33,290</td></tr>
+      <tr><td>Feb 2026</td><td>₹66,800</td><td>₹49,367</td><td>₹17,433</td><td>₹89,21,183</td></tr>
+      <tr><td>Mar 2026</td><td>₹66,800</td><td>₹54,553</td><td>₹12,247</td><td>₹89,03,750</td></tr>
+      <tr><td>Apr 2026</td><td>₹66,800</td><td>₹52,684</td><td>₹14,116</td><td>₹88,77,387</td></tr>
+      <tr><td>May 2026</td><td>₹1,26,800 <span style="font-size:.72rem;color:#16a34a">(+₹60k extra)</span></td><td>₹54,091</td><td>₹72,709</td><td>₹88,04,678</td></tr>
+      <tr><td>Jun 2026</td><td>₹66,800</td><td>₹52,197</td><td>₹14,603</td><td>₹88,04,678</td></tr>
+      <tr><td>Jul 2026</td><td>₹71,480 <span style="font-size:.72rem;color:#94a3b8">(+₹4,680 overdue)</span></td><td>₹53,835</td><td>₹17,645</td><td>₹87,85,395</td></tr>
+      <tr><td>Aug 2026</td><td>₹66,800</td><td>—</td><td>—</td><td>₹87,72,430</td></tr>
+      <tr style="background:#f0fdf4;font-weight:800">
+        <td>Total</td>
+        <td style="color:#16a34a">₹15,52,774</td>
+        <td style="color:#ea580c">₹12,24,491</td>
+        <td style="color:#2563eb">₹3,16,365 est.</td>
+        <td style="color:#dc2626">₹87,72,430</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;font-size:.8rem;color:#78350f">
+    <strong>Note:</strong> The loan is under construction-linked disbursement. Full EMI (₹66,746) started once full loan was disbursed. Interest-only phase ran Jul 2024 – Jun 2025 with partial payments. Principal repayment is slow at current stage — most EMI goes toward interest. Kanchan's SBI accounts 30747570660 and 43056003586 are the source accounts for EMI auto-debit.
+  </div>
+</div>
+
+<!-- ── Builder Bank Details ── -->
+<div class="section">
+  <div class="section-title">🏦 Builder RTGS Details (Tellapur Technocity Pvt Ltd)</div>
+  <div class="info-box">
+    <div class="info-row"><span>Account Name</span><span>Tellapur Technocity Private Limited – My Home Sayuk Collection A/c</span></div>
+    <div class="info-row"><span>Account Number</span><span>5345911424</span></div>
+    <div class="info-row"><span>Bank</span><span>Kotak Mahindra Bank Ltd</span></div>
+    <div class="info-row"><span>Branch</span><span>Madhapur, Hyderabad-500081</span></div>
+    <div class="info-row"><span>IFSC Code</span><span>KKBK0007466</span></div>
+    <div class="info-row"><span>Swift Code</span><span>KKBKINBBXXX</span></div>
+    <div class="info-row"><span>Contact</span><span>+91-9154297011 · swapna.s@myhomeconstructions.com</span></div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:20px;font-size:.75rem;color:#94a3b8">
+  Data sourced from builder receipts, TDS challans, cost sheet, and demand letters in Google Drive folder "Home-12807 my home sayuk".<br>
+  Last updated: 15 Aug 2026 · Flat 12-807, My Home Sayuk, Tellapur, Hyderabad.
+</div>
+
+</body>
+</html>
