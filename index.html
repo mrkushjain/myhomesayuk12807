@@ -1111,19 +1111,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <!-- ── Remaining Payments ── -->
 <div class="section">
-  <div class="section-title">🔴 Remaining Payments Summary</div>
+  <div class="section-title">🟡 Remaining Payments Summary (as of 20 Aug 2026)</div>
   <div class="info-box">
-    <div class="info-row"><span>39th Floor Slab — Balance (~₹13,07,720 consid. + GST)</span><span style="color:#dc2626;font-weight:800">~₹13,73,105</span></div>
-    <div class="info-row"><span>After Flooring, Doors &amp; Windows (₹17,27,176 + GST)</span><span style="color:#dc2626;font-weight:800">₹18,13,535</span></div>
-    <div class="info-row"><span>At Registration / Handover (₹17,27,176 + GST)</span><span style="color:#dc2626;font-weight:800">₹18,13,535</span></div>
+    <div class="info-row" style="color:#94a3b8;text-decoration:line-through"><span>39th Floor Slab — Balance</span><span>✅ PAID (Aug 2026)</span></div>
+    <div class="info-row" style="color:#94a3b8;text-decoration:line-through"><span>After Flooring, Doors &amp; Windows</span><span>✅ PAID (Aug 2026)</span></div>
+    <div class="info-row"><span>Registration / Handover — PDC ₹5,00,000 (post-dated cheque given on handover day)</span><span style="color:#d97706;font-weight:800">₹5,00,000 PDC</span></div>
     <div class="info-row"><span>Legal &amp; Documentation (at registration)</span><span style="color:#dc2626;font-weight:800">₹11,800</span></div>
     <div class="info-row"><span>Corpus Fund (at registration)</span><span style="color:#dc2626;font-weight:800">₹1,15,560</span></div>
     <div class="info-row"><span>Maintenance — 2 yrs (₹72/sqft × 1926 sqft + GST)</span><span style="color:#dc2626;font-weight:800">₹1,63,633</span></div>
     <div class="info-row"><span>Interior Deposit — post-handover (₹15k refundable + ₹10k non-refundable)</span><span style="color:#ea580c;font-weight:800">₹25,000</span></div>
-    <div class="info-row" style="border-top:2px solid #e2e8f0;margin-top:4px;padding-top:8px"><span style="font-weight:800">Total Remaining</span><span style="color:#dc2626;font-size:1.1rem;font-weight:900">~₹53,15,168</span></div>
+    <div class="info-row" style="border-top:2px solid #e2e8f0;margin-top:4px;padding-top:8px"><span style="font-weight:800">Total Remaining</span><span style="color:#d97706;font-size:1.1rem;font-weight:900">~₹8,15,993</span></div>
   </div>
   <div style="margin-top:10px;font-size:.78rem;color:#94a3b8;padding:0 4px">
-    * Remaining amounts before TDS deduction. Net payable to builder on sale consideration = Total − 1% TDS (TDS paid separately to IT Dept within 30 days). Maintenance + corpus + legal are not subject to TDS.
+    * PDC of ₹5,00,000 to be given to builder on handover day; builder will encash on day of registration. Maintenance + corpus + legal are not subject to TDS. All sale consideration TDS has been fully filed (Batch 6, 20 Aug 2026).
   </div>
 </div>
 
@@ -1330,7 +1330,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div style="text-align:center;padding:20px;font-size:.75rem;color:#94a3b8">
   Data sourced from builder receipts, TDS challans, cost sheet, and demand letters in Google Drive folder "Home-12807 my home sayuk".<br>
-  Last updated: 15 Aug 2026 · Flat 12-807, My Home Sayuk, Tellapur, Hyderabad.
+  Last updated: 20 Aug 2026 · Flat 12-807, My Home Sayuk, Tellapur, Hyderabad.
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -1347,7 +1347,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     data: {
       labels: ['Paid (consideration)', 'Remaining'],
       datasets: [{
-        data: [12587449, 4684311],
+        data: [17420432, 0],
         backgroundColor: ['#16a34a', '#e2e8f0'],
         borderColor: [SURFACE_GAP, SURFACE_GAP],
         borderWidth: 3,
@@ -1374,7 +1374,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         ctx.font = 'bold 22px -apple-system, sans-serif';
         ctx.fillStyle = '#16a34a';
         ctx.textAlign = 'center';
-        ctx.fillText('72.9%', cx, cy);
+        ctx.fillText('100%', cx, cy);
         ctx.font = '11px -apple-system, sans-serif';
         ctx.fillStyle = '#94a3b8';
         ctx.fillText('Paid', cx, cy + 17);
@@ -1391,13 +1391,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       datasets: [
         {
           label: 'Paid',
-          data: [262500, 1551035, 3627070, 3627070, 2720302, 1347197, 0, 0],
+          data: [262500, 1551035, 3627070, 3627070, 2720302, 2720302, 1813535, 500000],
           backgroundColor: '#22c55e',
           borderRadius: 4
         },
         {
-          label: 'Remaining',
-          data: [0, 0, 0, 0, 0, 1373105, 1813535, 1813535],
+          label: 'Remaining (PDC)',
+          data: [0, 0, 0, 0, 0, 0, 0, 0],
           backgroundColor: '#fca5a5',
           borderRadius: 4
         }
@@ -1435,7 +1435,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     data: {
       labels: ['SBI Bank Loan', 'Own Funds (to builder)', 'EMI Paid to SBI'],
       datasets: [{
-        data: [9088795, 3934113, 1552774],
+        data: [9088795, 8663341, 1552774],
         backgroundColor: ['#7c3aed', '#16a34a', '#2563eb'],
         borderColor: [SURFACE_GAP, SURFACE_GAP, SURFACE_GAP],
         borderWidth: 3,
@@ -1459,17 +1459,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   new Chart(document.getElementById('chartTds'), {
     type: 'bar',
     data: {
-      labels: ['Aug 2024\n(installs 1-3)', 'Nov 2024\n(install 4)', 'Feb 2025\n(install 5a)', 'Mar 2025\n(install 5b)', 'Jul 2025\n(install 6a)'],
+      labels: ['Aug 2024\n(installs 1-3)', 'Nov 2024\n(install 4)', 'Feb 2025\n(install 5a)', 'Mar 2025\n(install 5b)', 'Jul 2025\n(install 6a)', 'Aug 2026\n(last install)'],
       datasets: [
         {
           label: 'Kush',
-          data: [25908, 17272, 3847, 9108, 6416],
+          data: [25908, 17272, 3847, 9108, 6416, 24554],
           backgroundColor: '#3b82f6',
           borderRadius: 4
         },
         {
           label: 'Kanchan',
-          data: [25908, 17272, 3847, 9108, 6416],
+          data: [25908, 17272, 3847, 9108, 6416, 24554],
           backgroundColor: '#a855f7',
           borderRadius: 4
         }
